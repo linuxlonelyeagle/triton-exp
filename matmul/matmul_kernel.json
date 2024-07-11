@@ -1,0 +1,1 @@
+{"num_warps": 8, "num_stages": 3, "ctime": {"ttir": 1720682656.928701, "ttgir": 1720682656.9367008, "llir": 1720682657.2206984, "ptx": 1720682657.3926969, "cubin": 1720682657.7046943}, "shared": 147456, "name": "matmul_kernel_0d1d2d3d4d5d6d7c8d9c10d11c"}
