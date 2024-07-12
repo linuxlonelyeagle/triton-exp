@@ -52,6 +52,7 @@ def matmul_kernel(
     offs_am = pid_m * BLOCK_SIZE_M + tl.arange(0, BLOCK_SIZE_M)
     offs_bn = pid_n * BLOCK_SIZE_N + tl.arange(0, BLOCK_SIZE_N)
     offs_k = tl.arange(0, BLOCK_SIZE_K)
+    print(offs_k)
     a_ptrs = a_ptr + (offs_am[:, None] * stride_am + offs_k[None, :] * stride_ak)
     b_ptrs = b_ptr + (offs_k[:, None] * stride_bk + offs_bn[None, :] * stride_bn)
 
@@ -131,10 +132,11 @@ def matmul(a, b, activation=None):
 # -----------
 #
 # We can test our custom matrix multiplication operation against a native torch implementation (i.e., cuBLAS)
-
+'''
 torch.manual_seed(0)
 a = torch.randn((512, 512), device='cuda', dtype=torch.float16)
 b = torch.randn((512, 512), device='cuda', dtype=torch.float16)
+
 triton_output = matmul(a, b, activation=None)
 torch_output = torch.matmul(a, b)
 print(f"triton_output={triton_output}")
@@ -143,3 +145,9 @@ if triton.testing.allclose(triton_output, torch_output):
     print("✅ Triton and Torch match")
 else:
     print("❌ Triton and Torch differ")
+'''
+precompiled_kernel = None
+try:
+    precompiled_kernel = triton.compiler.compile("matmul_kernel.ttgir")
+except Exception:
+    print(Exception)

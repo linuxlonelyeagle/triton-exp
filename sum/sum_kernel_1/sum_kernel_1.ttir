@@ -1,0 +1,21 @@
+module {
+  func public @sum_kernel_1_0d1d2(%arg0: !tt.ptr<i64> {tt.divisibility = 16 : i32}, %arg1: !tt.ptr<i64> {tt.divisibility = 16 : i32}, %arg2: i32) {
+    %c16_i32 = arith.constant 16 : i32
+    %cst = arith.constant dense<0.000000e+00> : tensor<16xf32>
+    %0 = tt.get_program_id {axis = 0 : i32} : i32
+    %1 = arith.muli %0, %c16_i32 : i32
+    %2 = tt.make_range {end = 16 : i32, start = 0 : i32} : tensor<16xi32>
+    %3 = tt.splat %1 : (i32) -> tensor<16xi32>
+    %4 = arith.addi %3, %2 : tensor<16xi32>
+    %5 = tt.splat %arg0 : (!tt.ptr<i64>) -> tensor<16x!tt.ptr<i64>>
+    %6 = tt.addptr %5, %4 : tensor<16x!tt.ptr<i64>>, tensor<16xi32>
+    %7 = tt.splat %arg2 : (i32) -> tensor<16xi32>
+    %8 = arith.cmpi slt, %4, %7 : tensor<16xi32>
+    %9 = arith.fptosi %cst : tensor<16xf32> to tensor<16xi64>
+    %10 = tt.load %6, %8, %9 {cache = 1 : i32, evict = 1 : i32, isVolatile = false} : tensor<16xi64>
+    %11 = tt.reduce %10 {axis = 0 : i32, redOp = 1 : i32} : tensor<16xi64> -> i64
+    %12 = tt.addptr %arg1, %0 : !tt.ptr<i64>, i32
+    tt.store %12, %11 : i64
+    return
+  }
+}

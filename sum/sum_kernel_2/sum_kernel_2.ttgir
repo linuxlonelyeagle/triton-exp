@@ -1,0 +1,16 @@
+#blocked = #triton_gpu.blocked<{sizePerThread = [1], threadsPerWarp = [32], warpsPerCTA = [4], order = [0]}>
+module attributes {"triton_gpu.num-warps" = 4 : i32} {
+  func public @sum_kernel_2_0d1d2(%arg0: !tt.ptr<i64> {tt.divisibility = 16 : i32}, %arg1: !tt.ptr<i64> {tt.divisibility = 16 : i32}, %arg2: i32) {
+    %cst = arith.constant dense<0.000000e+00> : tensor<8xf32, #blocked>
+    %0 = tt.make_range {end = 8 : i32, start = 0 : i32} : tensor<8xi32, #blocked>
+    %1 = tt.splat %arg0 : (!tt.ptr<i64>) -> tensor<8x!tt.ptr<i64>, #blocked>
+    %2 = tt.addptr %1, %0 : tensor<8x!tt.ptr<i64>, #blocked>, tensor<8xi32, #blocked>
+    %3 = tt.splat %arg2 : (i32) -> tensor<8xi32, #blocked>
+    %4 = "triton_gpu.cmpi"(%0, %3) {predicate = 2 : i64} : (tensor<8xi32, #blocked>, tensor<8xi32, #blocked>) -> tensor<8xi1, #blocked>
+    %5 = arith.fptosi %cst : tensor<8xf32, #blocked> to tensor<8xi64, #blocked>
+    %6 = tt.load %2, %4, %5 {cache = 1 : i32, evict = 1 : i32, isVolatile = false} : tensor<8xi64, #blocked>
+    %7 = tt.reduce %6 {axis = 0 : i32, redOp = 1 : i32} : tensor<8xi64, #blocked> -> i64
+    tt.store %arg1, %7 : i64
+    return
+  }
+}

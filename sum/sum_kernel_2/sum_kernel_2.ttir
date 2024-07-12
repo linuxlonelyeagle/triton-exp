@@ -1,0 +1,15 @@
+module {
+  func public @sum_kernel_2_0d1d2(%arg0: !tt.ptr<i64> {tt.divisibility = 16 : i32}, %arg1: !tt.ptr<i64> {tt.divisibility = 16 : i32}, %arg2: i32) {
+    %cst = arith.constant dense<0.000000e+00> : tensor<8xf32>
+    %0 = tt.make_range {end = 8 : i32, start = 0 : i32} : tensor<8xi32>
+    %1 = tt.splat %arg0 : (!tt.ptr<i64>) -> tensor<8x!tt.ptr<i64>>
+    %2 = tt.addptr %1, %0 : tensor<8x!tt.ptr<i64>>, tensor<8xi32>
+    %3 = tt.splat %arg2 : (i32) -> tensor<8xi32>
+    %4 = arith.cmpi slt, %0, %3 : tensor<8xi32>
+    %5 = arith.fptosi %cst : tensor<8xf32> to tensor<8xi64>
+    %6 = tt.load %2, %4, %5 {cache = 1 : i32, evict = 1 : i32, isVolatile = false} : tensor<8xi64>
+    %7 = tt.reduce %6 {axis = 0 : i32, redOp = 1 : i32} : tensor<8xi64> -> i64
+    tt.store %arg1, %7 : i64
+    return
+  }
+}

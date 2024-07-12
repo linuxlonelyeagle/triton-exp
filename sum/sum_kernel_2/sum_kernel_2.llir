@@ -1,0 +1,69 @@
+; ModuleID = 'LLVMDialectModule'
+source_filename = "LLVMDialectModule"
+
+@global_smem = external addrspace(3) global [0 x i8]
+
+; Function Attrs: nounwind
+define void @sum_kernel_2_0d1d2(i64 addrspace(1)* %0, i64 addrspace(1)* %1, i32 %2) local_unnamed_addr #0 {
+  %4 = tail call i32 @llvm.nvvm.read.ptx.sreg.tid.x()
+  %5 = and i32 %4, 31
+  %6 = and i32 %4, 7
+  %7 = zext i32 %6 to i64
+  %8 = getelementptr i64, i64 addrspace(1)* %0, i64 %7
+  %9 = icmp slt i32 %6, %2
+  %10 = tail call i64 asm sideeffect "@$2 ld.global.b64 { $0 }, [ $1 + 0 ];\0A\09@!$4 mov.u64 $0, $3;", "=l,l,b,l,b"(i64 addrspace(1)* %8, i1 %9, i64 0, i1 %9) #0
+  %11 = icmp eq i32 %5, 0
+  %12 = bitcast i64 %10 to <2 x float>
+  %13 = extractelement <2 x float> %12, i64 0
+  %14 = extractelement <2 x float> %12, i64 1
+  %15 = tail call float asm "shfl.sync.bfly.b32 $0, $1, 0x4, 0x1f, 0xffffffff;", "=r,r"(float %13) #0
+  %16 = tail call float asm "shfl.sync.bfly.b32 $0, $1, 0x4, 0x1f, 0xffffffff;", "=r,r"(float %14) #0
+  %17 = insertelement <2 x float> undef, float %15, i64 0
+  %18 = insertelement <2 x float> %17, float %16, i64 1
+  %19 = bitcast <2 x float> %18 to i64
+  %20 = add i64 %10, %19
+  %21 = bitcast i64 %20 to <2 x float>
+  %22 = extractelement <2 x float> %21, i64 0
+  %23 = extractelement <2 x float> %21, i64 1
+  %24 = tail call float asm "shfl.sync.bfly.b32 $0, $1, 0x2, 0x1f, 0xffffffff;", "=r,r"(float %22) #0
+  %25 = tail call float asm "shfl.sync.bfly.b32 $0, $1, 0x2, 0x1f, 0xffffffff;", "=r,r"(float %23) #0
+  %26 = insertelement <2 x float> undef, float %24, i64 0
+  %27 = insertelement <2 x float> %26, float %25, i64 1
+  %28 = bitcast <2 x float> %27 to i64
+  %29 = add i64 %20, %28
+  %30 = bitcast i64 %29 to <2 x float>
+  %31 = extractelement <2 x float> %30, i64 0
+  %32 = extractelement <2 x float> %30, i64 1
+  %33 = tail call float asm "shfl.sync.bfly.b32 $0, $1, 0x1, 0x1f, 0xffffffff;", "=r,r"(float %31) #0
+  %34 = tail call float asm "shfl.sync.bfly.b32 $0, $1, 0x1, 0x1f, 0xffffffff;", "=r,r"(float %32) #0
+  %35 = insertelement <2 x float> undef, float %33, i64 0
+  %36 = insertelement <2 x float> %35, float %34, i64 1
+  %37 = bitcast <2 x float> %36 to i64
+  %38 = add i64 %29, %37
+  tail call void asm sideeffect "@$2 st.shared.b64 [ $0 + 0 ], $1;", "r,l,b"(i64 addrspace(3)* bitcast ([0 x i8] addrspace(3)* @global_smem to i64 addrspace(3)*), i64 %38, i1 %11) #0
+  tail call void @llvm.nvvm.barrier0()
+  %39 = sext i32 %4 to i64
+  %40 = getelementptr i64, i64 addrspace(3)* bitcast ([0 x i8] addrspace(3)* @global_smem to i64 addrspace(3)*), i64 %39
+  %41 = load i64, i64 addrspace(3)* %40, align 4
+  %42 = icmp slt i32 %4, 1
+  tail call void asm sideeffect "@$2 st.shared.b64 [ $0 + 0 ], $1;", "r,l,b"(i64 addrspace(3)* %40, i64 %41, i1 %42) #0
+  tail call void @llvm.nvvm.barrier0()
+  %43 = load i64, i64 addrspace(3)* bitcast ([0 x i8] addrspace(3)* @global_smem to i64 addrspace(3)*), align 4
+  tail call void asm sideeffect "@$2 st.global.b64 [ $1 + 0 ], { $0 };", "l,l,b"(i64 %43, i64 addrspace(1)* %1, i1 true) #0
+  ret void
+}
+
+; Function Attrs: nofree nosync nounwind readnone speculatable
+declare i32 @llvm.nvvm.read.ptx.sreg.tid.x() #1
+
+; Function Attrs: convergent nounwind
+declare void @llvm.nvvm.barrier0() #2
+
+attributes #0 = { nounwind }
+attributes #1 = { nofree nosync nounwind readnone speculatable }
+attributes #2 = { convergent nounwind }
+
+!nvvm.annotations = !{!0, !1, !0}
+
+!0 = !{void (i64 addrspace(1)*, i64 addrspace(1)*, i32)* @sum_kernel_2_0d1d2, !"kernel", i32 1}
+!1 = !{void (i64 addrspace(1)*, i64 addrspace(1)*, i32)* @sum_kernel_2_0d1d2, !"maxntidx", i32 128}
