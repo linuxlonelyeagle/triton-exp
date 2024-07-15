@@ -1,6 +1,7 @@
 import torch
 import triton
 import triton.language as tl
+import triton.compiler as compiler
 import math
 
 @triton.jit
@@ -43,20 +44,27 @@ def mean(inp, *, dtype=None):
     mid_size: 32
     block_mid = 32
     '''
-    
+    '''
     print(f"M: {M}")
     print(f"block_size: {block_size}")
     print(f"mid_size: {mid_size}")
     print(f"block_mid = {block_mid}")
-
+    '''
     mid = torch.empty((mid_size,), dtype=dtype, device=inp.device)
     out = torch.empty([], dtype=dtype, device=inp.device)
 
     with torch.cuda.device(inp.device):
-        mean_kernel_1[(mid_size, 1, 1)](inp, mid, M, block_size)
-        mean_kernel_2[(1, 1, 1)](mid, out, M, mid_size, block_mid)
+      compiled_kernel_1 : compiler.CompiledKernel = mean_kernel_1[(mid_size, 1, 1)](inp, mid, M, block_size)
+      compiled_kernel_2 : compiler.CompiledKernel = mean_kernel_2[(1, 1, 1)](mid, out, M, mid_size, block_mid)
+      '''      
+      print("compiled_kernel_1", compiled_kernel_1.asm["ttgir"])
+      print("compiled_kernel_2", compiled_kernel_2.asm["ttgir"])
+      '''
     return out
-
+'''
 input = torch.arange(0, 2024, device="cuda")
 output = mean(input)
 print(output)
+compiled_kernel =  compiler.compile("./mean_kernel_1/mean_kernel_1.ttir", num_warps = 2)
+print("compiled_kernel: ", compiled_kernel.asm["ttgir"])
+'''
