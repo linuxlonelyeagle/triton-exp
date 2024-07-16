@@ -24,10 +24,13 @@ def add(x: torch.Tensor, y: torch.Tensor):
     assert x.is_cuda and y.is_cuda and output.is_cuda
     n_elements = output.numel()
     grid = lambda meta: (triton.cdiv(n_elements, meta['BLOCK_SIZE']), )
-    compiled_kernel : compiler.CompiledKernel = add_kernel[grid](x, y, output, n_elements, BLOCK_SIZE=1024)
-    print("type:", compiled_kernel)
+    # set num_warps = 2
+    compiled_kernel : compiler.CompiledKernel = add_kernel[grid](x, y, output, n_elements, BLOCK_SIZE=1024, num_warps = 2)
     # convert kernel to MLIR
-    module = compiled_kernel.asm['ttir']
+    ttir_module = compiled_kernel.asm['ttir']
+    ttgir_module = compiled_kernel.asm['ttgir']
+    print(ttir_module)
+    print(ttgir_module)
     return output
 
 torch.manual_seed(0)
@@ -40,4 +43,3 @@ print(output_torch)
 print(output_triton)
 print(f'The maximum difference between torch and triton is '
       f'{torch.max(torch.abs(output_torch - output_triton))}')
-
