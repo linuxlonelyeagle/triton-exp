@@ -1,0 +1,36 @@
+; ModuleID = 'LLVMDialectModule'
+source_filename = "LLVMDialectModule"
+
+; Function Attrs: nounwind
+define void @neg_kernel_0d1d2d(float addrspace(1)* %0, float addrspace(1)* %1, i32 %2) local_unnamed_addr #0 {
+  %4 = tail call i32 @llvm.nvvm.read.ptx.sreg.tid.x()
+  %5 = and i32 %4, 3
+  %6 = tail call i32 @llvm.nvvm.read.ptx.sreg.ctaid.x()
+  %7 = shl i32 %6, 2
+  %8 = or i32 %7, %5
+  %9 = icmp slt i32 %8, %2
+  %10 = sext i32 %8 to i64
+  %11 = getelementptr float, float addrspace(1)* %0, i64 %10
+  %12 = tail call i32 asm sideeffect "@$2 ld.global.b32 { $0 }, [ $1 + 0 ];", "=r,l,b"(float addrspace(1)* %11, i1 %9) #0
+  %13 = bitcast i32 %12 to <1 x float>
+  %14 = extractelement <1 x float> %13, i64 0
+  %15 = fsub float 0.000000e+00, %14
+  %16 = getelementptr float, float addrspace(1)* %1, i64 %10
+  %17 = bitcast float %15 to i32
+  tail call void asm sideeffect "@$2 st.global.b32 [ $1 + 0 ], { $0 };", "r,l,b"(i32 %17, float addrspace(1)* %16, i1 %9) #0
+  ret void
+}
+
+; Function Attrs: nofree nosync nounwind readnone speculatable
+declare i32 @llvm.nvvm.read.ptx.sreg.tid.x() #1
+
+; Function Attrs: nofree nosync nounwind readnone speculatable
+declare i32 @llvm.nvvm.read.ptx.sreg.ctaid.x() #1
+
+attributes #0 = { nounwind }
+attributes #1 = { nofree nosync nounwind readnone speculatable }
+
+!nvvm.annotations = !{!0, !1, !0}
+
+!0 = !{void (float addrspace(1)*, float addrspace(1)*, i32)* @neg_kernel_0d1d2d, !"kernel", i32 1}
+!1 = !{void (float addrspace(1)*, float addrspace(1)*, i32)* @neg_kernel_0d1d2d, !"maxntidx", i32 128}

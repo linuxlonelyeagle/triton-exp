@@ -1,0 +1,240 @@
+#blocked = #triton_gpu.blocked<{sizePerThread = [1], threadsPerWarp = [32], warpsPerCTA = [4], order = [0]}>
+module attributes {"triton_gpu.num-warps" = 4 : i32} {
+  func public @randn_kernel_0d123(%arg0: !tt.ptr<f32> {tt.divisibility = 16 : i32}, %arg1: i32, %arg2: i32, %arg3: i32) {
+    %cst = arith.constant dense<-2.000000e+00> : tensor<8xf32, #blocked>
+    %cst_0 = arith.constant dense<6.28318548> : tensor<8xf32, #blocked>
+    %cst_1 = arith.constant dense<1.000000e-07> : tensor<8xf32, #blocked>
+    %cst_2 = arith.constant dense<0> : tensor<8xi32, #blocked>
+    %cst_3 = arith.constant dense<1> : tensor<8xi32, #blocked>
+    %cst_4 = arith.constant dense<4.6566126E-10> : tensor<8xf32, #blocked>
+    %c4294967295_i64 = arith.constant 4294967295 : i64
+    %c32_i64 = arith.constant 32 : i64
+    %c-1150833019_i32 = arith.constant -1150833019 : i32
+    %c-1640531527_i32 = arith.constant -1640531527 : i32
+    %cst_5 = arith.constant dense<-766435501> : tensor<8xi32, #blocked>
+    %cst_6 = arith.constant dense<-845247145> : tensor<8xi32, #blocked>
+    %c-1767562579_i32 = arith.constant -1767562579 : i32
+    %c-1879881855_i32 = arith.constant -1879881855 : i32
+    %c-616729560_i32 = arith.constant -616729560 : i32
+    %c-239350328_i32 = arith.constant -239350328 : i32
+    %c534103459_i32 = arith.constant 534103459 : i32
+    %c1401181199_i32 = arith.constant 1401181199 : i32
+    %c1684936478_i32 = arith.constant 1684936478 : i32
+    %c-1253254570_i32 = arith.constant -1253254570 : i32
+    %c-1459197799_i32 = arith.constant -1459197799 : i32
+    %c387276957_i32 = arith.constant 387276957 : i32
+    %c-308364780_i32 = arith.constant -308364780 : i32
+    %c2027808484_i32 = arith.constant 2027808484 : i32
+    %c842468239_i32 = arith.constant 842468239 : i32
+    %c-626627285_i32 = arith.constant -626627285 : i32
+    %c1993301258_i32 = arith.constant 1993301258 : i32
+    %c1013904242_i32 = arith.constant 1013904242 : i32
+    %c8_i32 = arith.constant 8 : i32
+    %c4_i32 = arith.constant 4 : i32
+    %cst_7 = arith.constant dense<8> : tensor<8xi32, #blocked>
+    %0 = arith.extsi %arg2 : i32 to i64
+    %1 = arith.extsi %arg3 : i32 to i64
+    %2 = arith.andi %1, %c4294967295_i64 : i64
+    %3 = arith.trunci %2 : i64 to i32
+    %4 = arith.shrsi %1, %c32_i64 : i64
+    %5 = arith.andi %4, %c4294967295_i64 : i64
+    %6 = arith.trunci %5 : i64 to i32
+    %7 = tt.get_program_id {axis = 0 : i32} : i32
+    %8 = arith.muli %7, %c8_i32 : i32
+    %9 = tt.make_range {end = 8 : i32, start = 0 : i32} : tensor<8xi32, #blocked>
+    %10 = tt.splat %8 : (i32) -> tensor<8xi32, #blocked>
+    %11 = arith.addi %10, %9 : tensor<8xi32, #blocked>
+    %12 = tt.splat %3 : (i32) -> tensor<8xi32, #blocked>
+    %13 = arith.addi %12, %11 : tensor<8xi32, #blocked>
+    %14 = arith.shrui %0, %c32_i64 : i64
+    %15 = arith.andi %14, %c4294967295_i64 : i64
+    %16 = arith.trunci %15 : i64 to i32
+    %17 = arith.andi %0, %c4294967295_i64 : i64
+    %18 = arith.trunci %17 : i64 to i32
+    %19 = tt.ext_elemwise %cst_6, %cst_2 {libname = "libdevice", libpath = "/root/triton-2.0/python/triton/language/../third_party/cuda/lib/libdevice.10.bc", symbol = "__nv_umulhi"} : tensor<8xi32, #blocked>, tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %20 = tt.splat %6 : (i32) -> tensor<8xi32, #blocked>
+    %21 = arith.xori %19, %20 : tensor<8xi32, #blocked>
+    %22 = tt.splat %18 : (i32) -> tensor<8xi32, #blocked>
+    %23 = arith.xori %21, %22 : tensor<8xi32, #blocked>
+    %24 = tt.ext_elemwise %cst_5, %13 {libname = "libdevice", libpath = "/root/triton-2.0/python/triton/language/../third_party/cuda/lib/libdevice.10.bc", symbol = "__nv_umulhi"} : tensor<8xi32, #blocked>, tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %25 = tt.splat %16 : (i32) -> tensor<8xi32, #blocked>
+    %26 = arith.xori %24, %25 : tensor<8xi32, #blocked>
+    %27 = arith.muli %13, %cst_5 : tensor<8xi32, #blocked>
+    %28 = arith.addi %18, %c-1640531527_i32 : i32
+    %29 = arith.addi %16, %c-1150833019_i32 : i32
+    %30 = tt.ext_elemwise %cst_6, %26 {libname = "libdevice", libpath = "/root/triton-2.0/python/triton/language/../third_party/cuda/lib/libdevice.10.bc", symbol = "__nv_umulhi"} : tensor<8xi32, #blocked>, tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %31 = tt.splat %28 : (i32) -> tensor<8xi32, #blocked>
+    %32 = arith.xori %30, %31 : tensor<8xi32, #blocked>
+    %33 = tt.ext_elemwise %cst_5, %23 {libname = "libdevice", libpath = "/root/triton-2.0/python/triton/language/../third_party/cuda/lib/libdevice.10.bc", symbol = "__nv_umulhi"} : tensor<8xi32, #blocked>, tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %34 = arith.xori %33, %27 : tensor<8xi32, #blocked>
+    %35 = tt.splat %29 : (i32) -> tensor<8xi32, #blocked>
+    %36 = arith.xori %34, %35 : tensor<8xi32, #blocked>
+    %37 = arith.muli %26, %cst_6 : tensor<8xi32, #blocked>
+    %38 = arith.muli %23, %cst_5 : tensor<8xi32, #blocked>
+    %39 = arith.addi %18, %c1013904242_i32 : i32
+    %40 = arith.addi %16, %c1993301258_i32 : i32
+    %41 = tt.ext_elemwise %cst_6, %36 {libname = "libdevice", libpath = "/root/triton-2.0/python/triton/language/../third_party/cuda/lib/libdevice.10.bc", symbol = "__nv_umulhi"} : tensor<8xi32, #blocked>, tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %42 = arith.xori %41, %37 : tensor<8xi32, #blocked>
+    %43 = tt.splat %39 : (i32) -> tensor<8xi32, #blocked>
+    %44 = arith.xori %42, %43 : tensor<8xi32, #blocked>
+    %45 = tt.ext_elemwise %cst_5, %32 {libname = "libdevice", libpath = "/root/triton-2.0/python/triton/language/../third_party/cuda/lib/libdevice.10.bc", symbol = "__nv_umulhi"} : tensor<8xi32, #blocked>, tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %46 = arith.xori %45, %38 : tensor<8xi32, #blocked>
+    %47 = tt.splat %40 : (i32) -> tensor<8xi32, #blocked>
+    %48 = arith.xori %46, %47 : tensor<8xi32, #blocked>
+    %49 = arith.muli %36, %cst_6 : tensor<8xi32, #blocked>
+    %50 = arith.muli %32, %cst_5 : tensor<8xi32, #blocked>
+    %51 = arith.addi %18, %c-626627285_i32 : i32
+    %52 = arith.addi %16, %c842468239_i32 : i32
+    %53 = tt.ext_elemwise %cst_6, %48 {libname = "libdevice", libpath = "/root/triton-2.0/python/triton/language/../third_party/cuda/lib/libdevice.10.bc", symbol = "__nv_umulhi"} : tensor<8xi32, #blocked>, tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %54 = arith.xori %53, %49 : tensor<8xi32, #blocked>
+    %55 = tt.splat %51 : (i32) -> tensor<8xi32, #blocked>
+    %56 = arith.xori %54, %55 : tensor<8xi32, #blocked>
+    %57 = tt.ext_elemwise %cst_5, %44 {libname = "libdevice", libpath = "/root/triton-2.0/python/triton/language/../third_party/cuda/lib/libdevice.10.bc", symbol = "__nv_umulhi"} : tensor<8xi32, #blocked>, tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %58 = arith.xori %57, %50 : tensor<8xi32, #blocked>
+    %59 = tt.splat %52 : (i32) -> tensor<8xi32, #blocked>
+    %60 = arith.xori %58, %59 : tensor<8xi32, #blocked>
+    %61 = arith.muli %48, %cst_6 : tensor<8xi32, #blocked>
+    %62 = arith.muli %44, %cst_5 : tensor<8xi32, #blocked>
+    %63 = arith.addi %18, %c2027808484_i32 : i32
+    %64 = arith.addi %16, %c-308364780_i32 : i32
+    %65 = tt.ext_elemwise %cst_6, %60 {libname = "libdevice", libpath = "/root/triton-2.0/python/triton/language/../third_party/cuda/lib/libdevice.10.bc", symbol = "__nv_umulhi"} : tensor<8xi32, #blocked>, tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %66 = arith.xori %65, %61 : tensor<8xi32, #blocked>
+    %67 = tt.splat %63 : (i32) -> tensor<8xi32, #blocked>
+    %68 = arith.xori %66, %67 : tensor<8xi32, #blocked>
+    %69 = tt.ext_elemwise %cst_5, %56 {libname = "libdevice", libpath = "/root/triton-2.0/python/triton/language/../third_party/cuda/lib/libdevice.10.bc", symbol = "__nv_umulhi"} : tensor<8xi32, #blocked>, tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %70 = arith.xori %69, %62 : tensor<8xi32, #blocked>
+    %71 = tt.splat %64 : (i32) -> tensor<8xi32, #blocked>
+    %72 = arith.xori %70, %71 : tensor<8xi32, #blocked>
+    %73 = arith.muli %60, %cst_6 : tensor<8xi32, #blocked>
+    %74 = arith.muli %56, %cst_5 : tensor<8xi32, #blocked>
+    %75 = arith.addi %18, %c387276957_i32 : i32
+    %76 = arith.addi %16, %c-1459197799_i32 : i32
+    %77 = tt.ext_elemwise %cst_6, %72 {libname = "libdevice", libpath = "/root/triton-2.0/python/triton/language/../third_party/cuda/lib/libdevice.10.bc", symbol = "__nv_umulhi"} : tensor<8xi32, #blocked>, tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %78 = arith.xori %77, %73 : tensor<8xi32, #blocked>
+    %79 = tt.splat %75 : (i32) -> tensor<8xi32, #blocked>
+    %80 = arith.xori %78, %79 : tensor<8xi32, #blocked>
+    %81 = tt.ext_elemwise %cst_5, %68 {libname = "libdevice", libpath = "/root/triton-2.0/python/triton/language/../third_party/cuda/lib/libdevice.10.bc", symbol = "__nv_umulhi"} : tensor<8xi32, #blocked>, tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %82 = arith.xori %81, %74 : tensor<8xi32, #blocked>
+    %83 = tt.splat %76 : (i32) -> tensor<8xi32, #blocked>
+    %84 = arith.xori %82, %83 : tensor<8xi32, #blocked>
+    %85 = arith.muli %72, %cst_6 : tensor<8xi32, #blocked>
+    %86 = arith.muli %68, %cst_5 : tensor<8xi32, #blocked>
+    %87 = arith.addi %18, %c-1253254570_i32 : i32
+    %88 = arith.addi %16, %c1684936478_i32 : i32
+    %89 = tt.ext_elemwise %cst_6, %84 {libname = "libdevice", libpath = "/root/triton-2.0/python/triton/language/../third_party/cuda/lib/libdevice.10.bc", symbol = "__nv_umulhi"} : tensor<8xi32, #blocked>, tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %90 = arith.xori %89, %85 : tensor<8xi32, #blocked>
+    %91 = tt.splat %87 : (i32) -> tensor<8xi32, #blocked>
+    %92 = arith.xori %90, %91 : tensor<8xi32, #blocked>
+    %93 = tt.ext_elemwise %cst_5, %80 {libname = "libdevice", libpath = "/root/triton-2.0/python/triton/language/../third_party/cuda/lib/libdevice.10.bc", symbol = "__nv_umulhi"} : tensor<8xi32, #blocked>, tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %94 = arith.xori %93, %86 : tensor<8xi32, #blocked>
+    %95 = tt.splat %88 : (i32) -> tensor<8xi32, #blocked>
+    %96 = arith.xori %94, %95 : tensor<8xi32, #blocked>
+    %97 = arith.muli %84, %cst_6 : tensor<8xi32, #blocked>
+    %98 = arith.muli %80, %cst_5 : tensor<8xi32, #blocked>
+    %99 = arith.addi %18, %c1401181199_i32 : i32
+    %100 = arith.addi %16, %c534103459_i32 : i32
+    %101 = tt.ext_elemwise %cst_6, %96 {libname = "libdevice", libpath = "/root/triton-2.0/python/triton/language/../third_party/cuda/lib/libdevice.10.bc", symbol = "__nv_umulhi"} : tensor<8xi32, #blocked>, tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %102 = arith.xori %101, %97 : tensor<8xi32, #blocked>
+    %103 = tt.splat %99 : (i32) -> tensor<8xi32, #blocked>
+    %104 = arith.xori %102, %103 : tensor<8xi32, #blocked>
+    %105 = tt.ext_elemwise %cst_5, %92 {libname = "libdevice", libpath = "/root/triton-2.0/python/triton/language/../third_party/cuda/lib/libdevice.10.bc", symbol = "__nv_umulhi"} : tensor<8xi32, #blocked>, tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %106 = arith.xori %105, %98 : tensor<8xi32, #blocked>
+    %107 = tt.splat %100 : (i32) -> tensor<8xi32, #blocked>
+    %108 = arith.xori %106, %107 : tensor<8xi32, #blocked>
+    %109 = arith.muli %96, %cst_6 : tensor<8xi32, #blocked>
+    %110 = arith.muli %92, %cst_5 : tensor<8xi32, #blocked>
+    %111 = arith.addi %18, %c-239350328_i32 : i32
+    %112 = arith.addi %16, %c-616729560_i32 : i32
+    %113 = tt.ext_elemwise %cst_6, %108 {libname = "libdevice", libpath = "/root/triton-2.0/python/triton/language/../third_party/cuda/lib/libdevice.10.bc", symbol = "__nv_umulhi"} : tensor<8xi32, #blocked>, tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %114 = arith.xori %113, %109 : tensor<8xi32, #blocked>
+    %115 = tt.splat %111 : (i32) -> tensor<8xi32, #blocked>
+    %116 = arith.xori %114, %115 : tensor<8xi32, #blocked>
+    %117 = tt.ext_elemwise %cst_5, %104 {libname = "libdevice", libpath = "/root/triton-2.0/python/triton/language/../third_party/cuda/lib/libdevice.10.bc", symbol = "__nv_umulhi"} : tensor<8xi32, #blocked>, tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %118 = arith.xori %117, %110 : tensor<8xi32, #blocked>
+    %119 = tt.splat %112 : (i32) -> tensor<8xi32, #blocked>
+    %120 = arith.xori %118, %119 : tensor<8xi32, #blocked>
+    %121 = arith.muli %108, %cst_6 : tensor<8xi32, #blocked>
+    %122 = arith.muli %104, %cst_5 : tensor<8xi32, #blocked>
+    %123 = arith.addi %18, %c-1879881855_i32 : i32
+    %124 = arith.addi %16, %c-1767562579_i32 : i32
+    %125 = tt.ext_elemwise %cst_6, %120 {libname = "libdevice", libpath = "/root/triton-2.0/python/triton/language/../third_party/cuda/lib/libdevice.10.bc", symbol = "__nv_umulhi"} : tensor<8xi32, #blocked>, tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %126 = arith.xori %125, %121 : tensor<8xi32, #blocked>
+    %127 = tt.splat %123 : (i32) -> tensor<8xi32, #blocked>
+    %128 = arith.xori %126, %127 : tensor<8xi32, #blocked>
+    %129 = tt.ext_elemwise %cst_5, %116 {libname = "libdevice", libpath = "/root/triton-2.0/python/triton/language/../third_party/cuda/lib/libdevice.10.bc", symbol = "__nv_umulhi"} : tensor<8xi32, #blocked>, tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %130 = arith.xori %129, %122 : tensor<8xi32, #blocked>
+    %131 = tt.splat %124 : (i32) -> tensor<8xi32, #blocked>
+    %132 = arith.xori %130, %131 : tensor<8xi32, #blocked>
+    %133 = arith.muli %120, %cst_6 : tensor<8xi32, #blocked>
+    %134 = arith.muli %116, %cst_5 : tensor<8xi32, #blocked>
+    %135 = tt.bitcast %128 : tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %136 = "triton_gpu.cmpi"(%135, %cst_2) {predicate = 2 : i64} : (tensor<8xi32, #blocked>, tensor<8xi32, #blocked>) -> tensor<8xi1, #blocked>
+    %137 = arith.subi %cst_2, %135 : tensor<8xi32, #blocked>
+    %138 = arith.subi %137, %cst_3 : tensor<8xi32, #blocked>
+    %139 = "triton_gpu.select"(%136, %138, %135) : (tensor<8xi1, #blocked>, tensor<8xi32, #blocked>, tensor<8xi32, #blocked>) -> tensor<8xi32, #blocked>
+    %140 = arith.sitofp %139 : tensor<8xi32, #blocked> to tensor<8xf32, #blocked>
+    %141 = arith.mulf %140, %cst_4 : tensor<8xf32, #blocked>
+    %142 = tt.bitcast %133 : tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %143 = "triton_gpu.cmpi"(%142, %cst_2) {predicate = 2 : i64} : (tensor<8xi32, #blocked>, tensor<8xi32, #blocked>) -> tensor<8xi1, #blocked>
+    %144 = arith.subi %cst_2, %142 : tensor<8xi32, #blocked>
+    %145 = arith.subi %144, %cst_3 : tensor<8xi32, #blocked>
+    %146 = "triton_gpu.select"(%143, %145, %142) : (tensor<8xi1, #blocked>, tensor<8xi32, #blocked>, tensor<8xi32, #blocked>) -> tensor<8xi32, #blocked>
+    %147 = arith.sitofp %146 : tensor<8xi32, #blocked> to tensor<8xf32, #blocked>
+    %148 = arith.mulf %147, %cst_4 : tensor<8xf32, #blocked>
+    %149 = tt.bitcast %132 : tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %150 = "triton_gpu.cmpi"(%149, %cst_2) {predicate = 2 : i64} : (tensor<8xi32, #blocked>, tensor<8xi32, #blocked>) -> tensor<8xi1, #blocked>
+    %151 = arith.subi %cst_2, %149 : tensor<8xi32, #blocked>
+    %152 = arith.subi %151, %cst_3 : tensor<8xi32, #blocked>
+    %153 = "triton_gpu.select"(%150, %152, %149) : (tensor<8xi1, #blocked>, tensor<8xi32, #blocked>, tensor<8xi32, #blocked>) -> tensor<8xi32, #blocked>
+    %154 = arith.sitofp %153 : tensor<8xi32, #blocked> to tensor<8xf32, #blocked>
+    %155 = arith.mulf %154, %cst_4 : tensor<8xf32, #blocked>
+    %156 = tt.bitcast %134 : tensor<8xi32, #blocked> -> tensor<8xi32, #blocked>
+    %157 = "triton_gpu.cmpi"(%156, %cst_2) {predicate = 2 : i64} : (tensor<8xi32, #blocked>, tensor<8xi32, #blocked>) -> tensor<8xi1, #blocked>
+    %158 = arith.subi %cst_2, %156 : tensor<8xi32, #blocked>
+    %159 = arith.subi %158, %cst_3 : tensor<8xi32, #blocked>
+    %160 = "triton_gpu.select"(%157, %159, %156) : (tensor<8xi1, #blocked>, tensor<8xi32, #blocked>, tensor<8xi32, #blocked>) -> tensor<8xi32, #blocked>
+    %161 = arith.sitofp %160 : tensor<8xi32, #blocked> to tensor<8xf32, #blocked>
+    %162 = arith.mulf %161, %cst_4 : tensor<8xf32, #blocked>
+    %163 = "triton_gpu.cmpf"(%cst_1, %141) {predicate = 2 : i64} : (tensor<8xf32, #blocked>, tensor<8xf32, #blocked>) -> tensor<8xi1, #blocked>
+    %164 = "triton_gpu.select"(%163, %cst_1, %141) : (tensor<8xi1, #blocked>, tensor<8xf32, #blocked>, tensor<8xf32, #blocked>) -> tensor<8xf32, #blocked>
+    %165 = arith.mulf %148, %cst_0 : tensor<8xf32, #blocked>
+    %166 = math.log %164 : tensor<8xf32, #blocked>
+    %167 = arith.mulf %166, %cst : tensor<8xf32, #blocked>
+    %168 = math.sqrt %167 : tensor<8xf32, #blocked>
+    %169 = math.cos %165 : tensor<8xf32, #blocked>
+    %170 = arith.mulf %168, %169 : tensor<8xf32, #blocked>
+    %171 = math.sin %165 : tensor<8xf32, #blocked>
+    %172 = arith.mulf %168, %171 : tensor<8xf32, #blocked>
+    %173 = "triton_gpu.cmpf"(%cst_1, %155) {predicate = 2 : i64} : (tensor<8xf32, #blocked>, tensor<8xf32, #blocked>) -> tensor<8xi1, #blocked>
+    %174 = "triton_gpu.select"(%173, %cst_1, %155) : (tensor<8xi1, #blocked>, tensor<8xf32, #blocked>, tensor<8xf32, #blocked>) -> tensor<8xf32, #blocked>
+    %175 = arith.mulf %162, %cst_0 : tensor<8xf32, #blocked>
+    %176 = math.log %174 : tensor<8xf32, #blocked>
+    %177 = arith.mulf %176, %cst : tensor<8xf32, #blocked>
+    %178 = math.sqrt %177 : tensor<8xf32, #blocked>
+    %179 = math.cos %175 : tensor<8xf32, #blocked>
+    %180 = arith.mulf %178, %179 : tensor<8xf32, #blocked>
+    %181 = math.sin %175 : tensor<8xf32, #blocked>
+    %182 = arith.mulf %178, %181 : tensor<8xf32, #blocked>
+    %183 = arith.muli %8, %c4_i32 : i32
+    %184 = tt.splat %183 : (i32) -> tensor<8xi32, #blocked>
+    %185 = arith.addi %184, %9 : tensor<8xi32, #blocked>
+    %186 = arith.addi %185, %cst_7 : tensor<8xi32, #blocked>
+    %187 = arith.addi %186, %cst_7 : tensor<8xi32, #blocked>
+    %188 = arith.addi %187, %cst_7 : tensor<8xi32, #blocked>
+    %189 = tt.splat %arg1 : (i32) -> tensor<8xi32, #blocked>
+    %190 = "triton_gpu.cmpi"(%185, %189) {predicate = 2 : i64} : (tensor<8xi32, #blocked>, tensor<8xi32, #blocked>) -> tensor<8xi1, #blocked>
+    %191 = tt.splat %arg0 : (!tt.ptr<f32>) -> tensor<8x!tt.ptr<f32>, #blocked>
+    %192 = tt.addptr %191, %185 : tensor<8x!tt.ptr<f32>, #blocked>, tensor<8xi32, #blocked>
+    tt.store %192, %170, %190 : tensor<8xf32, #blocked>
+    %193 = "triton_gpu.cmpi"(%186, %189) {predicate = 2 : i64} : (tensor<8xi32, #blocked>, tensor<8xi32, #blocked>) -> tensor<8xi1, #blocked>
+    %194 = tt.addptr %191, %186 : tensor<8x!tt.ptr<f32>, #blocked>, tensor<8xi32, #blocked>
+    tt.store %194, %172, %193 : tensor<8xf32, #blocked>
+    %195 = "triton_gpu.cmpi"(%187, %189) {predicate = 2 : i64} : (tensor<8xi32, #blocked>, tensor<8xi32, #blocked>) -> tensor<8xi1, #blocked>
+    %196 = tt.addptr %191, %187 : tensor<8x!tt.ptr<f32>, #blocked>, tensor<8xi32, #blocked>
+    tt.store %196, %180, %195 : tensor<8xf32, #blocked>
+    %197 = "triton_gpu.cmpi"(%188, %189) {predicate = 2 : i64} : (tensor<8xi32, #blocked>, tensor<8xi32, #blocked>) -> tensor<8xi1, #blocked>
+    %198 = tt.addptr %191, %188 : tensor<8x!tt.ptr<f32>, #blocked>, tensor<8xi32, #blocked>
+    tt.store %198, %182, %197 : tensor<8xf32, #blocked>
+    return
+  }
+}

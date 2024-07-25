@@ -1,0 +1,180 @@
+; ModuleID = 'LLVMDialectModule'
+source_filename = "LLVMDialectModule"
+
+; Function Attrs: nounwind
+define void @rand_kernel_0d1d23(float addrspace(1)* %0, i32 %1, i32 %2, i32 %3) local_unnamed_addr #0 {
+  %5 = tail call i32 @llvm.nvvm.read.ptx.sreg.tid.x()
+  %6 = and i32 %5, 7
+  %7 = ashr i32 %3, 31
+  %8 = tail call i32 @llvm.nvvm.read.ptx.sreg.ctaid.x()
+  %9 = shl i32 %8, 3
+  %10 = or i32 %9, %6
+  %11 = add i32 %10, %3
+  %12 = ashr i32 %2, 31
+  %13 = tail call i32 @llvm.nvvm.mulhi.ui(i32 -845247145, i32 0) #0
+  %14 = xor i32 %13, %2
+  %15 = xor i32 %14, %7
+  %16 = tail call i32 @llvm.nvvm.mulhi.ui(i32 -766435501, i32 %11) #0
+  %17 = xor i32 %16, %12
+  %18 = mul i32 %11, -766435501
+  %19 = add i32 %2, -1640531527
+  %20 = add nsw i32 %12, -1150833019
+  %21 = tail call i32 @llvm.nvvm.mulhi.ui(i32 -845247145, i32 %17) #0
+  %22 = xor i32 %21, %19
+  %23 = tail call i32 @llvm.nvvm.mulhi.ui(i32 -766435501, i32 %15) #0
+  %24 = xor i32 %18, %20
+  %25 = xor i32 %24, %23
+  %26 = mul i32 %17, -845247145
+  %27 = mul i32 %15, -766435501
+  %28 = add i32 %2, 1013904242
+  %29 = add nsw i32 %12, 1993301258
+  %30 = tail call i32 @llvm.nvvm.mulhi.ui(i32 -845247145, i32 %25) #0
+  %31 = xor i32 %26, %28
+  %32 = xor i32 %31, %30
+  %33 = tail call i32 @llvm.nvvm.mulhi.ui(i32 -766435501, i32 %22) #0
+  %34 = xor i32 %27, %29
+  %35 = xor i32 %34, %33
+  %36 = mul i32 %25, -845247145
+  %37 = mul i32 %22, -766435501
+  %38 = add i32 %2, -626627285
+  %39 = add nsw i32 %12, 842468239
+  %40 = tail call i32 @llvm.nvvm.mulhi.ui(i32 -845247145, i32 %35) #0
+  %41 = xor i32 %36, %38
+  %42 = xor i32 %41, %40
+  %43 = tail call i32 @llvm.nvvm.mulhi.ui(i32 -766435501, i32 %32) #0
+  %44 = xor i32 %37, %39
+  %45 = xor i32 %44, %43
+  %46 = mul i32 %35, -845247145
+  %47 = mul i32 %32, -766435501
+  %48 = add i32 %2, 2027808484
+  %49 = add nsw i32 %12, -308364780
+  %50 = tail call i32 @llvm.nvvm.mulhi.ui(i32 -845247145, i32 %45) #0
+  %51 = xor i32 %46, %48
+  %52 = xor i32 %51, %50
+  %53 = tail call i32 @llvm.nvvm.mulhi.ui(i32 -766435501, i32 %42) #0
+  %54 = xor i32 %47, %49
+  %55 = xor i32 %54, %53
+  %56 = mul i32 %45, -845247145
+  %57 = mul i32 %42, -766435501
+  %58 = add i32 %2, 387276957
+  %59 = add nsw i32 %12, -1459197799
+  %60 = tail call i32 @llvm.nvvm.mulhi.ui(i32 -845247145, i32 %55) #0
+  %61 = xor i32 %56, %58
+  %62 = xor i32 %61, %60
+  %63 = tail call i32 @llvm.nvvm.mulhi.ui(i32 -766435501, i32 %52) #0
+  %64 = xor i32 %57, %59
+  %65 = xor i32 %64, %63
+  %66 = mul i32 %55, -845247145
+  %67 = mul i32 %52, -766435501
+  %68 = add i32 %2, -1253254570
+  %69 = add nsw i32 %12, 1684936478
+  %70 = tail call i32 @llvm.nvvm.mulhi.ui(i32 -845247145, i32 %65) #0
+  %71 = xor i32 %66, %68
+  %72 = xor i32 %71, %70
+  %73 = tail call i32 @llvm.nvvm.mulhi.ui(i32 -766435501, i32 %62) #0
+  %74 = xor i32 %67, %69
+  %75 = xor i32 %74, %73
+  %76 = mul i32 %65, -845247145
+  %77 = mul i32 %62, -766435501
+  %78 = add i32 %2, 1401181199
+  %79 = add nsw i32 %12, 534103459
+  %80 = tail call i32 @llvm.nvvm.mulhi.ui(i32 -845247145, i32 %75) #0
+  %81 = xor i32 %76, %78
+  %82 = xor i32 %81, %80
+  %83 = tail call i32 @llvm.nvvm.mulhi.ui(i32 -766435501, i32 %72) #0
+  %84 = xor i32 %77, %79
+  %85 = xor i32 %84, %83
+  %86 = mul i32 %75, -845247145
+  %87 = mul i32 %72, -766435501
+  %88 = add i32 %2, -239350328
+  %89 = add nsw i32 %12, -616729560
+  %90 = tail call i32 @llvm.nvvm.mulhi.ui(i32 -845247145, i32 %85) #0
+  %91 = xor i32 %86, %88
+  %92 = xor i32 %91, %90
+  %93 = tail call i32 @llvm.nvvm.mulhi.ui(i32 -766435501, i32 %82) #0
+  %94 = xor i32 %87, %89
+  %95 = xor i32 %94, %93
+  %96 = mul i32 %85, -845247145
+  %97 = mul i32 %82, -766435501
+  %98 = add i32 %2, -1879881855
+  %99 = add nsw i32 %12, -1767562579
+  %100 = tail call i32 @llvm.nvvm.mulhi.ui(i32 -845247145, i32 %95) #0
+  %101 = xor i32 %96, %98
+  %102 = xor i32 %101, %100
+  %103 = tail call i32 @llvm.nvvm.mulhi.ui(i32 -766435501, i32 %92) #0
+  %104 = xor i32 %97, %99
+  %105 = xor i32 %104, %103
+  %106 = mul i32 %95, -845247145
+  %107 = mul i32 %92, -766435501
+  %.lobit = ashr i32 %102, 31
+  %108 = xor i32 %.lobit, %102
+  %109 = sitofp i32 %108 to float
+  %110 = fmul float %109, 0x3DFFFFFFE0000000
+  %.lobit1 = ashr i32 %106, 31
+  %111 = xor i32 %.lobit1, %106
+  %112 = sitofp i32 %111 to float
+  %113 = fmul float %112, 0x3DFFFFFFE0000000
+  %.lobit2 = ashr i32 %105, 31
+  %114 = xor i32 %.lobit2, %105
+  %115 = sitofp i32 %114 to float
+  %116 = fmul float %115, 0x3DFFFFFFE0000000
+  %.lobit3 = ashr i32 %107, 31
+  %117 = xor i32 %.lobit3, %107
+  %118 = sitofp i32 %117 to float
+  %119 = fmul float %118, 0x3DFFFFFFE0000000
+  %120 = shl i32 %8, 5
+  %121 = or i32 %120, %6
+  %122 = or i32 %121, 8
+  %123 = or i32 %121, 16
+  %124 = or i32 %121, 24
+  %125 = icmp slt i32 %121, %1
+  %126 = sext i32 %121 to i64
+  %127 = getelementptr float, float addrspace(1)* %0, i64 %126
+  %128 = bitcast float %110 to i32
+  tail call void asm sideeffect "@$2 st.global.b32 [ $1 + 0 ], { $0 };", "r,l,b"(i32 %128, float addrspace(1)* %127, i1 %125) #0
+  %129 = icmp slt i32 %122, %1
+  %130 = sext i32 %122 to i64
+  %131 = getelementptr float, float addrspace(1)* %0, i64 %130
+  %132 = bitcast float %113 to i32
+  tail call void asm sideeffect "@$2 st.global.b32 [ $1 + 0 ], { $0 };", "r,l,b"(i32 %132, float addrspace(1)* %131, i1 %129) #0
+  %133 = icmp slt i32 %123, %1
+  %134 = sext i32 %123 to i64
+  %135 = getelementptr float, float addrspace(1)* %0, i64 %134
+  %136 = bitcast float %116 to i32
+  tail call void asm sideeffect "@$2 st.global.b32 [ $1 + 0 ], { $0 };", "r,l,b"(i32 %136, float addrspace(1)* %135, i1 %133) #0
+  %137 = icmp slt i32 %124, %1
+  %138 = sext i32 %124 to i64
+  %139 = getelementptr float, float addrspace(1)* %0, i64 %138
+  %140 = bitcast float %119 to i32
+  tail call void asm sideeffect "@$2 st.global.b32 [ $1 + 0 ], { $0 };", "r,l,b"(i32 %140, float addrspace(1)* %139, i1 %137) #0
+  ret void
+}
+
+; Function Attrs: nofree nosync nounwind readnone speculatable
+declare i32 @llvm.nvvm.read.ptx.sreg.tid.x() #1
+
+; Function Attrs: nofree nosync nounwind readnone speculatable
+declare i32 @llvm.nvvm.read.ptx.sreg.ctaid.x() #1
+
+; Function Attrs: alwaysinline mustprogress nofree nosync nounwind readnone willreturn
+define i32 @__nv_umulhi(i32 %x, i32 %y) local_unnamed_addr #2 {
+  %1 = tail call i32 @llvm.nvvm.mulhi.ui(i32 %x, i32 %y)
+  ret i32 %1
+}
+
+; Function Attrs: mustprogress nofree nosync nounwind readnone speculatable willreturn
+declare i32 @llvm.nvvm.mulhi.ui(i32, i32) #3
+
+attributes #0 = { nounwind }
+attributes #1 = { nofree nosync nounwind readnone speculatable }
+attributes #2 = { alwaysinline mustprogress nofree nosync nounwind readnone willreturn "disable-tail-calls"="false" "frame-pointer"="all" "less-precise-fpmad"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #3 = { mustprogress nofree nosync nounwind readnone speculatable willreturn }
+
+!nvvm.annotations = !{!0, !1, !0}
+!llvm.ident = !{!2}
+!llvm.module.flags = !{!3}
+
+!0 = !{void (float addrspace(1)*, i32, i32, i32)* @rand_kernel_0d1d23, !"kernel", i32 1}
+!1 = !{void (float addrspace(1)*, i32, i32, i32)* @rand_kernel_0d1d23, !"maxntidx", i32 128}
+!2 = !{!"clang version 3.8.0 (tags/RELEASE_380/final)"}
+!3 = !{i32 4, !"nvvm-reflect-ftz", i32 1}
