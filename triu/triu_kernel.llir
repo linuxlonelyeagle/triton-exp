@@ -1,0 +1,69 @@
+; ModuleID = 'LLVMDialectModule'
+source_filename = "LLVMDialectModule"
+
+; Function Attrs: nounwind
+define void @triu_kernel_0d1d234d(float addrspace(1)* %0, float addrspace(1)* %1, i32 %2, i32 %3, i32 %4) local_unnamed_addr #0 {
+  %6 = tail call i32 @llvm.nvvm.read.ptx.sreg.tid.x()
+  %7 = lshr i32 %6, 3
+  %8 = and i32 %7, 31
+  %9 = and i32 %6, 7
+  %10 = tail call i32 @llvm.nvvm.read.ptx.sreg.ctaid.x()
+  %11 = shl i32 %10, 5
+  %12 = or i32 %8, %11
+  %13 = or i32 %11, 16
+  %14 = add i32 %13, %8
+  %15 = icmp slt i32 %12, %2
+  %16 = icmp slt i32 %14, %2
+  %17 = mul i32 %12, %3
+  %18 = mul i32 %14, %3
+  %19 = sext i32 %17 to i64
+  %20 = getelementptr float, float addrspace(1)* %0, i64 %19
+  %21 = sext i32 %18 to i64
+  %22 = getelementptr float, float addrspace(1)* %0, i64 %21
+  %23 = getelementptr float, float addrspace(1)* %1, i64 %19
+  %24 = getelementptr float, float addrspace(1)* %1, i64 %21
+  %25 = add i32 %12, %4
+  %26 = add i32 %14, %4
+  %27 = icmp sgt i32 %3, 0
+  br i1 %27, label %.lr.ph, label %._crit_edge
+
+.lr.ph:                                           ; preds = %5, %.lr.ph
+  %28 = phi i32 [ %42, %.lr.ph ], [ 0, %5 ]
+  %29 = or i32 %28, %9
+  %30 = icmp slt i32 %29, %3
+  %31 = and i1 %15, %30
+  %32 = and i1 %16, %30
+  %33 = sext i32 %29 to i64
+  %34 = getelementptr float, float addrspace(1)* %20, i64 %33
+  %35 = getelementptr float, float addrspace(1)* %22, i64 %33
+  %36 = tail call i32 asm sideeffect "@$2 ld.global.b32 { $0 }, [ $1 + 0 ];\0A\09@!$4 mov.u32 $0, $3;", "=r,l,b,r,b"(float addrspace(1)* %34, i1 %31, i32 0, i1 %31) #0
+  %37 = tail call i32 asm sideeffect "@$2 ld.global.b32 { $0 }, [ $1 + 0 ];\0A\09@!$4 mov.u32 $0, $3;", "=r,l,b,r,b"(float addrspace(1)* %35, i1 %32, i32 0, i1 %32) #0
+  %.not = icmp sgt i32 %25, %29
+  %.not2 = icmp sgt i32 %26, %29
+  %38 = getelementptr float, float addrspace(1)* %23, i64 %33
+  %39 = getelementptr float, float addrspace(1)* %24, i64 %33
+  %40 = select i1 %.not, i32 0, i32 %36
+  tail call void asm sideeffect "@$2 st.global.b32 [ $1 + 0 ], { $0 };", "r,l,b"(i32 %40, float addrspace(1)* %38, i1 %31) #0
+  %41 = select i1 %.not2, i32 0, i32 %37
+  tail call void asm sideeffect "@$2 st.global.b32 [ $1 + 0 ], { $0 };", "r,l,b"(i32 %41, float addrspace(1)* %39, i1 %32) #0
+  %42 = add i32 %28, 8
+  %43 = icmp slt i32 %42, %3
+  br i1 %43, label %.lr.ph, label %._crit_edge
+
+._crit_edge:                                      ; preds = %.lr.ph, %5
+  ret void
+}
+
+; Function Attrs: nofree nosync nounwind readnone speculatable
+declare i32 @llvm.nvvm.read.ptx.sreg.tid.x() #1
+
+; Function Attrs: nofree nosync nounwind readnone speculatable
+declare i32 @llvm.nvvm.read.ptx.sreg.ctaid.x() #1
+
+attributes #0 = { nounwind }
+attributes #1 = { nofree nosync nounwind readnone speculatable }
+
+!nvvm.annotations = !{!0, !1, !0}
+
+!0 = !{void (float addrspace(1)*, float addrspace(1)*, i32, i32, i32)* @triu_kernel_0d1d234d, !"kernel", i32 1}
+!1 = !{void (float addrspace(1)*, float addrspace(1)*, i32, i32, i32)* @triu_kernel_0d1d234d, !"maxntidx", i32 128}

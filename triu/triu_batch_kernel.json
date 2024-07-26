@@ -1,0 +1,1 @@
+{"num_warps": 4, "num_stages": 3, "ctime": {"ttir": 1721962484.8175883, "ttgir": 1721962484.8215883, "llir": 1721962484.8255882, "ptx": 1721962484.8775876, "cubin": 1721962484.9775867}, "shared": 0, "name": "triu_batch_kernel_0d1d2345d"}
