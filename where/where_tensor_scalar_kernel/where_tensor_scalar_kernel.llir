@@ -1,0 +1,37 @@
+; ModuleID = 'LLVMDialectModule'
+source_filename = "LLVMDialectModule"
+
+; Function Attrs: nounwind
+define void @where_tensor_scalar_kernel_0d1d2c3d4d(i1 addrspace(1)* %0, float addrspace(1)* %1, float addrspace(1)* %2, i32 %3) local_unnamed_addr #0 {
+  %5 = tail call i32 @llvm.nvvm.read.ptx.sreg.tid.x()
+  %6 = and i32 %5, 3
+  %7 = tail call i32 @llvm.nvvm.read.ptx.sreg.ctaid.x()
+  %8 = shl i32 %7, 2
+  %9 = or i32 %8, %6
+  %10 = icmp slt i32 %9, %3
+  %11 = sext i32 %9 to i64
+  %12 = getelementptr i1, i1 addrspace(1)* %0, i64 %11
+  %13 = bitcast i1 addrspace(1)* %12 to i8 addrspace(1)*
+  %14 = tail call i8 asm sideeffect "@$2 ld.global.b8 { $0 }, [ $1 + 0 ];", "=c,l,b"(i8 addrspace(1)* %13, i1 %10) #0
+  %15 = getelementptr float, float addrspace(1)* %1, i64 %11
+  %16 = tail call i32 asm sideeffect "@$2 ld.global.b32 { $0 }, [ $1 + 0 ];", "=r,l,b"(float addrspace(1)* %15, i1 %10) #0
+  %.not = icmp eq i8 %14, 0
+  %17 = getelementptr float, float addrspace(1)* %2, i64 %11
+  %18 = select i1 %.not, i32 1065353216, i32 %16
+  tail call void asm sideeffect "@$2 st.global.b32 [ $1 + 0 ], { $0 };", "r,l,b"(i32 %18, float addrspace(1)* %17, i1 %10) #0
+  ret void
+}
+
+; Function Attrs: nofree nosync nounwind readnone speculatable
+declare i32 @llvm.nvvm.read.ptx.sreg.tid.x() #1
+
+; Function Attrs: nofree nosync nounwind readnone speculatable
+declare i32 @llvm.nvvm.read.ptx.sreg.ctaid.x() #1
+
+attributes #0 = { nounwind }
+attributes #1 = { nofree nosync nounwind readnone speculatable }
+
+!nvvm.annotations = !{!0, !1, !0}
+
+!0 = !{void (i1 addrspace(1)*, float addrspace(1)*, float addrspace(1)*, i32)* @where_tensor_scalar_kernel_0d1d2c3d4d, !"kernel", i32 1}
+!1 = !{void (i1 addrspace(1)*, float addrspace(1)*, float addrspace(1)*, i32)* @where_tensor_scalar_kernel_0d1d2c3d4d, !"maxntidx", i32 128}

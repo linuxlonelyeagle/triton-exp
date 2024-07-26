@@ -1,0 +1,1 @@
+{"num_warps": 4, "num_stages": 3, "ctime": {"ttir": 1721978607.0942662, "ttgir": 1721978607.0982661, "llir": 1721978607.102266, "ptx": 1721978607.166266, "cubin": 1721978607.2582655}, "shared": 0, "name": "where_scalar_tensor_kernel_0d1c2d3d4d"}

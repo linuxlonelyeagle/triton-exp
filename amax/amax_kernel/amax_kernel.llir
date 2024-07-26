@@ -1,0 +1,131 @@
+; ModuleID = 'LLVMDialectModule'
+source_filename = "LLVMDialectModule"
+
+@global_smem = external addrspace(3) global [0 x i8]
+
+; Function Attrs: nounwind
+define void @amax_kernel_0d1d23(float addrspace(1)* %0, float addrspace(1)* %1, i32 %2, i32 %3) local_unnamed_addr #0 {
+  %5 = tail call i32 @llvm.nvvm.read.ptx.sreg.tid.x()
+  %6 = and i32 %5, 31
+  %7 = lshr i32 %6, 3
+  %8 = lshr i32 %5, 3
+  %9 = and i32 %8, 28
+  %10 = or i32 %7, %9
+  %11 = add nuw nsw i32 %10, 16
+  %12 = and i32 %5, 7
+  %13 = tail call i32 @llvm.nvvm.read.ptx.sreg.ctaid.x()
+  %14 = shl i32 %13, 5
+  %15 = or i32 %14, %6
+  %16 = or i32 %10, %14
+  %17 = add i32 %11, %14
+  %18 = mul i32 %16, %3
+  %19 = mul i32 %17, %3
+  %20 = sext i32 %18 to i64
+  %21 = getelementptr float, float addrspace(1)* %0, i64 %20
+  %22 = sext i32 %19 to i64
+  %23 = getelementptr float, float addrspace(1)* %0, i64 %22
+  %24 = icmp slt i32 %16, %2
+  %25 = icmp slt i32 %17, %2
+  %26 = icmp sgt i32 %3, 0
+  br i1 %26, label %.lr.ph, label %._crit_edge
+
+.lr.ph:                                           ; preds = %4, %.lr.ph
+  %27 = phi { float, float } [ %49, %.lr.ph ], [ { float 0xFFF0000000000000, float 0xFFF0000000000000 }, %4 ]
+  %28 = phi i32 [ %50, %.lr.ph ], [ 0, %4 ]
+  %29 = or i32 %28, %12
+  %30 = icmp slt i32 %29, %3
+  %31 = and i1 %24, %30
+  %32 = and i1 %25, %30
+  %33 = sext i32 %29 to i64
+  %34 = getelementptr float, float addrspace(1)* %21, i64 %33
+  %35 = getelementptr float, float addrspace(1)* %23, i64 %33
+  %36 = tail call i32 asm sideeffect "@$2 ld.global.b32 { $0 }, [ $1 + 0 ];\0A\09@!$4 mov.u32 $0, $3;", "=r,l,b,r,b"(float addrspace(1)* %34, i1 %31, i32 -8388608, i1 %31) #0
+  %37 = bitcast i32 %36 to <1 x float>
+  %38 = extractelement <1 x float> %37, i64 0
+  %39 = tail call i32 asm sideeffect "@$2 ld.global.b32 { $0 }, [ $1 + 0 ];\0A\09@!$4 mov.u32 $0, $3;", "=r,l,b,r,b"(float addrspace(1)* %35, i1 %32, i32 -8388608, i1 %32) #0
+  %40 = bitcast i32 %39 to <1 x float>
+  %41 = extractelement <1 x float> %40, i64 0
+  %42 = extractvalue { float, float } %27, 0
+  %43 = extractvalue { float, float } %27, 1
+  %44 = fcmp ogt float %42, %38
+  %45 = fcmp ogt float %43, %41
+  %46 = select i1 %44, float %42, float %38
+  %47 = select i1 %45, float %43, float %41
+  %48 = insertvalue { float, float } undef, float %46, 0
+  %49 = insertvalue { float, float } %48, float %47, 1
+  %50 = add i32 %28, 8
+  %51 = icmp slt i32 %50, %3
+  br i1 %51, label %.lr.ph, label %._crit_edge
+
+._crit_edge:                                      ; preds = %.lr.ph, %4
+  %.lcssa = phi { float, float } [ { float 0xFFF0000000000000, float 0xFFF0000000000000 }, %4 ], [ %49, %.lr.ph ]
+  %52 = icmp slt i32 %15, %2
+  %53 = sext i32 %15 to i64
+  %54 = getelementptr float, float addrspace(1)* %1, i64 %53
+  %55 = extractvalue { float, float } %.lcssa, 0
+  %56 = extractvalue { float, float } %.lcssa, 1
+  %57 = icmp eq i32 %12, 0
+  %58 = tail call float asm "shfl.sync.bfly.b32 $0, $1, 0x4, 0x1f, 0xffffffff;", "=r,r"(float %55) #0
+  %59 = tail call float @llvm.maxnum.f32(float %55, float %58)
+  %60 = tail call float asm "shfl.sync.bfly.b32 $0, $1, 0x2, 0x1f, 0xffffffff;", "=r,r"(float %59) #0
+  %61 = tail call float @llvm.maxnum.f32(float %59, float %60)
+  %62 = tail call float asm "shfl.sync.bfly.b32 $0, $1, 0x1, 0x1f, 0xffffffff;", "=r,r"(float %61) #0
+  %63 = tail call float @llvm.maxnum.f32(float %61, float %62)
+  %64 = zext i32 %10 to i64
+  %65 = getelementptr float, float addrspace(3)* bitcast ([0 x i8] addrspace(3)* @global_smem to float addrspace(3)*), i64 %64
+  tail call void asm sideeffect "@$2 st.shared.b32 [ $0 + 0 ], $1;", "r,r,b"(float addrspace(3)* %65, float %63, i1 %57) #0
+  %66 = tail call float asm "shfl.sync.bfly.b32 $0, $1, 0x4, 0x1f, 0xffffffff;", "=r,r"(float %56) #0
+  %67 = tail call float @llvm.maxnum.f32(float %56, float %66)
+  %68 = tail call float asm "shfl.sync.bfly.b32 $0, $1, 0x2, 0x1f, 0xffffffff;", "=r,r"(float %67) #0
+  %69 = tail call float @llvm.maxnum.f32(float %67, float %68)
+  %70 = tail call float asm "shfl.sync.bfly.b32 $0, $1, 0x1, 0x1f, 0xffffffff;", "=r,r"(float %69) #0
+  %71 = tail call float @llvm.maxnum.f32(float %69, float %70)
+  %72 = zext i32 %11 to i64
+  %73 = getelementptr float, float addrspace(3)* bitcast ([0 x i8] addrspace(3)* @global_smem to float addrspace(3)*), i64 %72
+  tail call void asm sideeffect "@$2 st.shared.b32 [ $0 + 0 ], $1;", "r,r,b"(float addrspace(3)* %73, float %71, i1 %57) #0
+  tail call void @llvm.nvvm.barrier0()
+  %74 = sext i32 %5 to i64
+  %75 = getelementptr float, float addrspace(3)* bitcast ([0 x i8] addrspace(3)* @global_smem to float addrspace(3)*), i64 %74
+  %76 = load float, float addrspace(3)* %75, align 4
+  %77 = icmp slt i32 %5, 32
+  tail call void asm sideeffect "@$2 st.shared.b32 [ $0 + 0 ], $1;", "r,r,b"(float addrspace(3)* %75, float %76, i1 %77) #0
+  tail call void @llvm.nvvm.barrier0()
+  %78 = load float, float addrspace(3)* %65, align 4
+  %79 = load float, float addrspace(3)* %73, align 4
+  tail call void @llvm.nvvm.barrier0()
+  %80 = bitcast float addrspace(3)* %65 to <1 x float> addrspace(3)*
+  %81 = insertelement <1 x float> undef, float %78, i64 0
+  store <1 x float> %81, <1 x float> addrspace(3)* %80, align 4
+  %82 = bitcast float addrspace(3)* %73 to <1 x float> addrspace(3)*
+  %83 = insertelement <1 x float> undef, float %79, i64 0
+  store <1 x float> %83, <1 x float> addrspace(3)* %82, align 4
+  tail call void @llvm.nvvm.barrier0()
+  %84 = zext i32 %6 to i64
+  %85 = getelementptr float, float addrspace(3)* bitcast ([0 x i8] addrspace(3)* @global_smem to float addrspace(3)*), i64 %84
+  %86 = bitcast float addrspace(3)* %85 to i32 addrspace(3)*
+  %87 = load i32, i32 addrspace(3)* %86, align 4
+  tail call void asm sideeffect "@$2 st.global.b32 [ $1 + 0 ], { $0 };", "r,l,b"(i32 %87, float addrspace(1)* %54, i1 %52) #0
+  ret void
+}
+
+; Function Attrs: nofree nosync nounwind readnone speculatable
+declare i32 @llvm.nvvm.read.ptx.sreg.tid.x() #1
+
+; Function Attrs: nofree nosync nounwind readnone speculatable
+declare i32 @llvm.nvvm.read.ptx.sreg.ctaid.x() #1
+
+; Function Attrs: mustprogress nofree nosync nounwind readnone speculatable willreturn
+declare float @llvm.maxnum.f32(float, float) #2
+
+; Function Attrs: convergent nounwind
+declare void @llvm.nvvm.barrier0() #3
+
+attributes #0 = { nounwind }
+attributes #1 = { nofree nosync nounwind readnone speculatable }
+attributes #2 = { mustprogress nofree nosync nounwind readnone speculatable willreturn }
+attributes #3 = { convergent nounwind }
+
+!nvvm.annotations = !{!0, !1, !0}
+
+!0 = !{void (float addrspace(1)*, float addrspace(1)*, i32, i32)* @amax_kernel_0d1d23, !"kernel", i32 1}
+!1 = !{void (float addrspace(1)*, float addrspace(1)*, i32, i32)* @amax_kernel_0d1d23, !"maxntidx", i32 128}

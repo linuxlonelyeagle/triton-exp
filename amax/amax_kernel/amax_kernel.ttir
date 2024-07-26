@@ -1,0 +1,46 @@
+module {
+  func public @amax_kernel_0d1d23(%arg0: !tt.ptr<f32> {tt.divisibility = 16 : i32}, %arg1: !tt.ptr<f32> {tt.divisibility = 16 : i32}, %arg2: i32, %arg3: i32) {
+    %c8 = arith.constant 8 : index
+    %c0 = arith.constant 0 : index
+    %cst = arith.constant dense<0xFF800000> : tensor<32x8xf32>
+    %c32_i32 = arith.constant 32 : i32
+    %0 = tt.get_program_id {axis = 0 : i32} : i32
+    %1 = arith.muli %0, %c32_i32 : i32
+    %2 = tt.make_range {end = 32 : i32, start = 0 : i32} : tensor<32xi32>
+    %3 = tt.expand_dims %2 {axis = 1 : i32} : (tensor<32xi32>) -> tensor<32x1xi32>
+    %4 = tt.splat %1 : (i32) -> tensor<32x1xi32>
+    %5 = arith.addi %4, %3 : tensor<32x1xi32>
+    %6 = tt.splat %arg3 : (i32) -> tensor<32x1xi32>
+    %7 = arith.muli %5, %6 : tensor<32x1xi32>
+    %8 = tt.splat %arg0 : (!tt.ptr<f32>) -> tensor<32x1x!tt.ptr<f32>>
+    %9 = tt.addptr %8, %7 : tensor<32x1x!tt.ptr<f32>>, tensor<32x1xi32>
+    %10 = tt.splat %arg1 : (!tt.ptr<f32>) -> tensor<32x1x!tt.ptr<f32>>
+    %11 = tt.addptr %10, %5 : tensor<32x1x!tt.ptr<f32>>, tensor<32x1xi32>
+    %12 = tt.splat %arg2 : (i32) -> tensor<32x1xi32>
+    %13 = arith.cmpi slt, %5, %12 : tensor<32x1xi32>
+    %14 = arith.index_cast %arg3 : i32 to index
+    %15 = tt.make_range {end = 8 : i32, start = 0 : i32} : tensor<8xi32>
+    %16 = tt.expand_dims %15 {axis = 0 : i32} : (tensor<8xi32>) -> tensor<1x8xi32>
+    %17 = tt.splat %arg3 : (i32) -> tensor<1x8xi32>
+    %18 = tt.broadcast %13 : (tensor<32x1xi1>) -> tensor<32x8xi1>
+    %19 = tt.broadcast %9 : (tensor<32x1x!tt.ptr<f32>>) -> tensor<32x8x!tt.ptr<f32>>
+    %20 = scf.for %arg4 = %c0 to %14 step %c8 iter_args(%arg5 = %cst) -> (tensor<32x8xf32>) {
+      %23 = arith.index_cast %arg4 : index to i32
+      %24 = tt.splat %23 : (i32) -> tensor<1x8xi32>
+      %25 = arith.addi %24, %16 : tensor<1x8xi32>
+      %26 = arith.cmpi slt, %25, %17 : tensor<1x8xi32>
+      %27 = tt.broadcast %26 : (tensor<1x8xi1>) -> tensor<32x8xi1>
+      %28 = arith.andi %18, %27 : tensor<32x8xi1>
+      %29 = tt.broadcast %25 : (tensor<1x8xi32>) -> tensor<32x8xi32>
+      %30 = tt.addptr %19, %29 : tensor<32x8x!tt.ptr<f32>>, tensor<32x8xi32>
+      %31 = tt.load %30, %28, %cst {cache = 1 : i32, evict = 1 : i32, isVolatile = false} : tensor<32x8xf32>
+      %32 = arith.cmpf ogt, %arg5, %31 : tensor<32x8xf32>
+      %33 = select %32, %arg5, %31 : tensor<32x8xi1>, tensor<32x8xf32>
+      scf.yield %33 : tensor<32x8xf32>
+    }
+    %21 = tt.reduce %20 {axis = 1 : i32, redOp = 12 : i32} : tensor<32x8xf32> -> tensor<32xf32>
+    %22 = tt.expand_dims %21 {axis = 1 : i32} : (tensor<32xf32>) -> tensor<32x1xf32>
+    tt.store %11, %22, %13 : tensor<32x1xf32>
+    return
+  }
+}

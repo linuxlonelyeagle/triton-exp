@@ -1,0 +1,1 @@
+{"num_warps": 4, "num_stages": 3, "ctime": {"ttir": 1721960207.6629343, "ttgir": 1721960207.6829338, "llir": 1721960207.7349322, "ptx": 1721960207.7949302, "cubin": 1721960207.898927}, "shared": 0, "name": "dropout_forward_kernel_0d1d2d345"}

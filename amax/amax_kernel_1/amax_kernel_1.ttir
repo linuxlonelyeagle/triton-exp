@@ -1,0 +1,20 @@
+module {
+  func public @amax_kernel_1_0d1d2d(%arg0: !tt.ptr<f32> {tt.divisibility = 16 : i32}, %arg1: !tt.ptr<f32> {tt.divisibility = 16 : i32}, %arg2: i32 {tt.divisibility = 16 : i32}) {
+    %c8_i32 = arith.constant 8 : i32
+    %cst = arith.constant dense<0xFF800000> : tensor<8xf32>
+    %0 = tt.get_program_id {axis = 0 : i32} : i32
+    %1 = arith.muli %0, %c8_i32 : i32
+    %2 = tt.make_range {end = 8 : i32, start = 0 : i32} : tensor<8xi32>
+    %3 = tt.splat %1 : (i32) -> tensor<8xi32>
+    %4 = arith.addi %3, %2 : tensor<8xi32>
+    %5 = tt.splat %arg0 : (!tt.ptr<f32>) -> tensor<8x!tt.ptr<f32>>
+    %6 = tt.addptr %5, %4 : tensor<8x!tt.ptr<f32>>, tensor<8xi32>
+    %7 = tt.splat %arg2 : (i32) -> tensor<8xi32>
+    %8 = arith.cmpi slt, %4, %7 : tensor<8xi32>
+    %9 = tt.load %6, %8, %cst {cache = 1 : i32, evict = 1 : i32, isVolatile = false} : tensor<8xf32>
+    %10 = tt.reduce %9 {axis = 0 : i32, redOp = 12 : i32} : tensor<8xf32> -> f32
+    %11 = tt.addptr %arg1, %0 : !tt.ptr<f32>, i32
+    tt.store %11, %10 : f32
+    return
+  }
+}

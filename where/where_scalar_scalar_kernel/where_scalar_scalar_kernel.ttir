@@ -1,0 +1,5 @@
+module {
+  func public @where_scalar_scalar_kernel_0d1d2d(%arg0: !tt.ptr<i1> {tt.divisibility = 16 : i32}, %arg1: !tt.ptr<f32> {tt.divisibility = 16 : i32}, %arg2: i32 {tt.divisibility = 16 : i32}) {
+    return
+  }
+}

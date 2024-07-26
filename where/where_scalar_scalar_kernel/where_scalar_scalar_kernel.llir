@@ -1,0 +1,14 @@
+; ModuleID = 'LLVMDialectModule'
+source_filename = "LLVMDialectModule"
+
+; Function Attrs: mustprogress nofree norecurse nosync nounwind readnone willreturn
+define void @where_scalar_scalar_kernel_0d1d2d(i1 addrspace(1)* nocapture %0, float addrspace(1)* nocapture %1, i32 %2) local_unnamed_addr #0 {
+  ret void
+}
+
+attributes #0 = { mustprogress nofree norecurse nosync nounwind readnone willreturn }
+
+!nvvm.annotations = !{!0, !1, !0}
+
+!0 = !{void (i1 addrspace(1)*, float addrspace(1)*, i32)* @where_scalar_scalar_kernel_0d1d2d, !"kernel", i32 1}
+!1 = !{void (i1 addrspace(1)*, float addrspace(1)*, i32)* @where_scalar_scalar_kernel_0d1d2d, !"maxntidx", i32 128}

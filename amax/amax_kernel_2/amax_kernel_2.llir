@@ -1,0 +1,54 @@
+; ModuleID = 'LLVMDialectModule'
+source_filename = "LLVMDialectModule"
+
+@global_smem = external addrspace(3) global [0 x i8]
+
+; Function Attrs: nounwind
+define void @amax_kernel_2_0d1d2(float addrspace(1)* %0, float addrspace(1)* %1, i32 %2) local_unnamed_addr #0 {
+  %4 = tail call i32 @llvm.nvvm.read.ptx.sreg.tid.x()
+  %5 = and i32 %4, 31
+  %6 = and i32 %4, 7
+  %7 = zext i32 %6 to i64
+  %8 = getelementptr float, float addrspace(1)* %0, i64 %7
+  %9 = icmp slt i32 %6, %2
+  %10 = tail call i32 asm sideeffect "@$2 ld.global.b32 { $0 }, [ $1 + 0 ];\0A\09@!$4 mov.u32 $0, $3;", "=r,l,b,r,b"(float addrspace(1)* %8, i1 %9, i32 -8388608, i1 %9) #0
+  %11 = bitcast i32 %10 to <1 x float>
+  %12 = extractelement <1 x float> %11, i64 0
+  %13 = icmp eq i32 %5, 0
+  %14 = tail call float asm "shfl.sync.bfly.b32 $0, $1, 0x4, 0x1f, 0xffffffff;", "=r,r"(float %12) #0
+  %15 = tail call float @llvm.maxnum.f32(float %12, float %14)
+  %16 = tail call float asm "shfl.sync.bfly.b32 $0, $1, 0x2, 0x1f, 0xffffffff;", "=r,r"(float %15) #0
+  %17 = tail call float @llvm.maxnum.f32(float %15, float %16)
+  %18 = tail call float asm "shfl.sync.bfly.b32 $0, $1, 0x1, 0x1f, 0xffffffff;", "=r,r"(float %17) #0
+  %19 = tail call float @llvm.maxnum.f32(float %17, float %18)
+  tail call void asm sideeffect "@$2 st.shared.b32 [ $0 + 0 ], $1;", "r,r,b"(float addrspace(3)* bitcast ([0 x i8] addrspace(3)* @global_smem to float addrspace(3)*), float %19, i1 %13) #0
+  tail call void @llvm.nvvm.barrier0()
+  %20 = sext i32 %4 to i64
+  %21 = getelementptr float, float addrspace(3)* bitcast ([0 x i8] addrspace(3)* @global_smem to float addrspace(3)*), i64 %20
+  %22 = load float, float addrspace(3)* %21, align 4
+  %23 = icmp slt i32 %4, 1
+  tail call void asm sideeffect "@$2 st.shared.b32 [ $0 + 0 ], $1;", "r,r,b"(float addrspace(3)* %21, float %22, i1 %23) #0
+  tail call void @llvm.nvvm.barrier0()
+  %24 = load i32, i32 addrspace(3)* bitcast ([0 x i8] addrspace(3)* @global_smem to i32 addrspace(3)*), align 4
+  tail call void asm sideeffect "@$2 st.global.b32 [ $1 + 0 ], { $0 };", "r,l,b"(i32 %24, float addrspace(1)* %1, i1 true) #0
+  ret void
+}
+
+; Function Attrs: nofree nosync nounwind readnone speculatable
+declare i32 @llvm.nvvm.read.ptx.sreg.tid.x() #1
+
+; Function Attrs: mustprogress nofree nosync nounwind readnone speculatable willreturn
+declare float @llvm.maxnum.f32(float, float) #2
+
+; Function Attrs: convergent nounwind
+declare void @llvm.nvvm.barrier0() #3
+
+attributes #0 = { nounwind }
+attributes #1 = { nofree nosync nounwind readnone speculatable }
+attributes #2 = { mustprogress nofree nosync nounwind readnone speculatable willreturn }
+attributes #3 = { convergent nounwind }
+
+!nvvm.annotations = !{!0, !1, !0}
+
+!0 = !{void (float addrspace(1)*, float addrspace(1)*, i32)* @amax_kernel_2_0d1d2, !"kernel", i32 1}
+!1 = !{void (float addrspace(1)*, float addrspace(1)*, i32)* @amax_kernel_2_0d1d2, !"maxntidx", i32 128}
